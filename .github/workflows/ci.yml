@@ -78,7 +78,9 @@ jobs:
         run: pytest
 
   deploy:
-    needs: pytest  # Ensures deployment runs only if the `pytest` job passes
+    needs:
+      - linter
+      - pytest  # Ensures deployment runs only if both linter and pytest jobs pass
     runs-on: ubuntu-latest
 
     steps:
