@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=forge
+POSTGRES_USER=oDKgAwJFqaVEdctMMLGjEzhyGHWuxoSZ
+POSTGRES_PASSWORD=8gTyzb9kM8JwC5KGt15WvpPMJ1fTcecFq2cLQ4oTxmeJuICmRdMZqoTrCOdctNWh
