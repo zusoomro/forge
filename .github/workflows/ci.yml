@@ -1,6 +1,5 @@
 name: CI
 
-# Enable Buildkit and let compose use it to speed up image building
 env:
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
@@ -32,7 +31,6 @@ jobs:
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
 
-  # With no caching at all the entire ci process takes 3m to complete!
   pytest:
     runs-on: ubuntu-latest
 
@@ -50,7 +48,6 @@ jobs:
 
     env:
       REDIS_URL: 'redis://localhost:6379/0'
-      # postgres://user:password@host:port/database
       DATABASE_URL: 'postgres://postgres:postgres@localhost:5432/postgres'
 
     steps:
@@ -79,3 +76,27 @@ jobs:
 
       - name: Test with pytest
         run: pytest
+
+  deploy:
+    needs: pytest  # Ensures deployment runs only if the `pytest` job passes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Authenticate with Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku auth:token
+
+      - name: Deploy to Heroku
+        env:
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: |
+          heroku git:remote -a $HEROKU_APP_NAME
+          git push heroku main
